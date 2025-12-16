@@ -1,0 +1,27 @@
+# 03. The Hadron Scout Engine 🐍
+
+### **The Problem**
+Community-based accelerators (like Hadron FC) often have thousands of members in their Discord and network. Identifying high-potential founders manually is noise-heavy and inefficient. You cannot read every message or check every GitHub profile by hand.
+
+### **The Solution**
+The **Hadron Scout** is a Python-based scoring engine that automates the "Signal vs. Noise" filter. It ingests raw community data (execution metrics + engagement metrics) and outputs a ranked list of founders to invite to high-value events (e.g., the Dubai Bootcamp).
+
+### **The Logic (Weighted Scoring)**
+The algorithm prioritizes **Execution** (Builders) over **Talk** (Chatters), but acknowledges that "Vibes" are critical for community fit.
+
+| Metric | Weight | Rationale |
+| :--- | :--- | :--- |
+| **GitHub Commits** | `2.0x` | High weight. Code ships products. |
+| **Events Attended** | `20.0x` | Very High weight. Proof of real-world commitment. |
+| **Vibe Score** | `1.5x` | Cultural fit is a multiplier. |
+| **Discord Messages** | `0.1x` | Low weight. Talking $\neq$ Building. |
+
+### **The Output**
+The script generates a visual heatmap (Bar Chart) and a clean text table, automatically tagging the top 3 candidates for **"✅ INVITE TO DUBAI"** and placing the rest on the **"Waitlist"**.
+
+### **Tech Stack**
+* **Language:** Python
+* **Libraries:** `pandas` (Data Processing), `matplotlib` (Visualization)
+
+---
+*Part of the "100 Days of Growth Ops" Challenge by Smit Godiyal.*
