@@ -1,0 +1,54 @@
+import re
+import csv
+import os
+
+# --- 1. SETUP ---
+input_file = "raw_data.txt"
+output_file = "hunted_leads.csv"
+
+# --- 2. THE PATTERNS (The "Growth Magic") ---
+# This looks for: text + @ + text + . + text (Standard Email)
+email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+
+# This looks for: Optional (+91), digits, dashes, spaces (Phone Numbers)
+phone_pattern = r'(\+\d{1,3}[- ]?)?\(?\d{3}\)?[- ]?\d{3}[- ]?\d{4}'
+
+def start_hunting():
+    # Check if input exists
+    if not os.path.exists(input_file):
+        print(f"❌ Error: {input_file} not found. Create it first!")
+        return
+
+    print(f"🕵️‍♂️ Reading {input_file}...")
+    
+    # Read the messy data
+    with open(input_file, "r", encoding="utf-8") as f:
+        text_content = f.read()
+
+    # Find matches
+    found_emails = set(re.findall(email_pattern, text_content)) # set() removes duplicates
+    found_phones = set(re.findall(phone_pattern, text_content))
+
+    print("-------------------------------")
+    print(f"✅ Found {len(found_emails)} Emails")
+    print(f"✅ Found {len(found_phones)} Phone Numbers")
+    print("-------------------------------")
+
+    # Write to CSV (Excel ready)
+    with open(output_file, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Type", "Value"]) # Header
+        
+        for email in found_emails:
+            writer.writerow(["Email", email])
+            print(f"🔹 Saved: {email}")
+            
+        for phone in found_phones:
+            writer.writerow(["Phone", phone.strip()])
+            print(f"🔸 Saved: {phone.strip()}")
+
+    print("-------------------------------")
+    print(f"🚀 DONE! Check '{output_file}' for your leads.")
+
+if __name__ == "__main__":
+    start_hunting()
