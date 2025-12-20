@@ -1,7 +1,7 @@
 import google.generativeai as genai
 
 # Your Key
-KEY = "AIzaSyBONEgdEtleadyh7g_7jfPSiG-ipn0_btg"
+KEY = --
 genai.configure(api_key=KEY)
 
 print("🔎 Scanning for available AI models...")
