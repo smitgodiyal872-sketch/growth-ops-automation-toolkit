@@ -1,0 +1,21 @@
+import google.generativeai as genai
+
+# Your Key
+KEY = "AIzaSyBONEgdEtleadyh7g_7jfPSiG-ipn0_btg"
+genai.configure(api_key=KEY)
+
+print("🔎 Scanning for available AI models...")
+print("-------------------------------------")
+
+try:
+    found_any = False
+    for m in genai.list_models():
+        if 'generateContent' in m.supported_generation_methods:
+            print(f"✅ FOUND: {m.name}")
+            found_any = True
+
+    if not found_any:
+        print("❌ No text generation models found. API might be disabled.")
+
+except Exception as e:
+    print(f"❌ Error connecting to Google: {e}")
