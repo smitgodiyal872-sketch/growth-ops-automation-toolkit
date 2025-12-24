@@ -1,0 +1,43 @@
+# 🧠 Boardroom Brain (RAG Agent)
+
+**Architected by Smit Godiyal**
+
+An "Executive Intelligence" tool that turns static PDF documents (Annual Reports, Pitch Decks, Contracts) into interactive strategic advisors. Built for the Founder's Office to speed up due diligence.
+
+![App Screenshot](https://via.placeholder.com/1200x600.png?text=Paste+Your+Screenshot+Here)
+*(Replace this link with your actual screenshot)*
+
+## 🛑 The Problem
+Founders drown in documentation.
+* **Investor Decks:** 40+ pages of fluff.
+* **Legal Contracts:** Dense jargon.
+* **Market Reports:** Too long to read fully.
+
+## 🛠️ The Solution
+I built a **RAG (Retrieval-Augmented Generation)** system in Python that:
+1.  **Ingests PDFs:** Extracts raw text from binary files.
+2.  **Contextualizes:** Feeds the content into Google Gemini's 1M token context window.
+3.  **Advises:** Acts as a "Strategic Consultant," answering high-level questions based *only* on the document's truth.
+
+## ⚙️ The Stack
+* **Frontend:** Streamlit
+* **Intelligence:** Google Gemini API (Auto-detects Flash/Pro models)
+* **Processing:** PyPDF
+* **Architecture:** RAG (Retrieval-Augmented Generation)
+
+## 🚀 How to Run
+1.  **Clone the repo:**
+    ```bash
+    git clone [https://github.com/smitgodiyal/boardroom-brain.git](https://github.com/smitgodiyal/boardroom-brain.git)
+    ```
+2.  **Install dependencies:**
+    ```bash
+    pip install streamlit google-generativeai pypdf
+    ```
+3.  **Run the App:**
+    ```bash
+    streamlit run boardroom_brain.py
+    ```
+
+---
+*Built for High-Agency Operators.*
