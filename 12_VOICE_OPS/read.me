@@ -1,0 +1,27 @@
+# 🎙️ Voice Ops Agent (Voice-to-CRM)
+
+**Architected by Smit Godiyal**
+
+A "Founder Mode" tool that eliminates manual CRM data entry. It uses **Google Gemini 1.5 Flash (Multimodal)** to listen to raw voice notes, extract structured lead data, and auto-draft follow-up emails instantly.
+
+![App Screenshot](https://via.placeholder.com/1200x600.png?text=Paste+Your+Screenshot+Here)
+*(Replace this link with your actual screenshot)*
+
+## 🛑 The Problem
+Founders meet 10+ people a day but fail to track them because manual data entry is high-friction.
+* **Lost Network:** forgetting to add leads to HubSpot/Notion.
+* **Slow Follow-ups:** "I'll email them later" turns into "never."
+* **Data Decay:** Context is lost if not recorded immediately.
+
+## 🛠️ The Solution
+I built a **Voice-to-CRM Bridge** in Python that acts as an "AI Chief of Staff":
+1.  **Native Listening:** Uses Gemini 1.5's multimodal capabilities to "hear" audio files directly (no whisper transcription needed).
+2.  **Structured Extraction:** Converts messy rants into clean JSON (Name, Role, Company, Action Items).
+3.  **Auto-Drafting:** Writes a context-aware follow-up email ready to send.
+
+## ⚙️ The Stack
+* **Frontend:** Streamlit (v1.40+ for Audio Input)
+* **Intelligence:** Google Gemini 1.5 Flash (Multimodal Audio Processing)
+* **Language:** Python 3.10+
+
+## 🚀 How to Run
