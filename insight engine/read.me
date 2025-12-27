@@ -1,0 +1,33 @@
+# 📊 Insight Engine (AI Data Analyst)
+
+**Architected by Smit Godiyal**
+
+A "Code Interpreter" for your spreadsheet data. This tool turns raw CSV/Excel files into interactive charts by writing and executing Python code in real-time. Built for the Founder's Office to replace manual Excel reporting with instant conversation.
+
+![App Screenshot](https://via.placeholder.com/1200x600.png?text=Paste+Your+Screenshot+Here)
+*(Replace this link with your actual screenshot)*
+
+## 🛑 The Problem
+Business data is trapped in static CSVs and Excel sheets.
+* **The Latency:** Founders ask "What's the revenue trend?" and wait 2 days for an analyst to build a deck.
+* **The Friction:** Excel charts are clunky and hard to update.
+* **The Skill Gap:** Non-technical stakeholders can't write SQL or Python to query their own data.
+
+## 🛠️ The Solution
+I built an **Insight Engine** that acts as an on-demand Data Scientist:
+1.  **Ingestion:** Instantly loads CSV or Excel files into a Pandas DataFrame.
+2.  **Code Generation:** Translates plain English queries (e.g., *"Show me a pie chart of sales by region"*) into executable Python/Plotly code using Google Gemini.
+3.  **Execution:** Safely runs the code in a sandbox to render interactive, zoomable charts instantly.
+
+## ⚙️ The Stack
+* **Frontend:** Streamlit
+* **Intelligence:** Google Gemini 1.5 Flash (Logic & Code Gen)
+* **Data Processing:** Pandas (Python Data Analysis Library)
+* **Visualization:** Plotly Express (Interactive Graphing)
+
+## 🚀 How to Run
+
+### 1. Clone the repo
+```bash
+git clone [https://github.com/smitgodiyal/insight-engine.git](https://github.com/smitgodiyal/insight-engine.git)
+cd insight-engine
