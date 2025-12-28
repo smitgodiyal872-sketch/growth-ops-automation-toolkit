@@ -1,0 +1,108 @@
+import streamlit as st
+import google.generativeai as genai
+import requests
+from bs4 import BeautifulSoup
+
+# --- 1. CONFIG ---
+st.set_page_config(page_title="Competitor Spy", page_icon="🕵️‍♂️", layout="wide")
+
+st.markdown("""
+    <style>
+    .stApp { background-color: #0e1117; color: #fff; }
+    .battle-card { background-color: #1e2130; padding: 20px; border-radius: 10px; border-left: 5px solid #ff4b4b; }
+    .section-title { color: #00d26a; font-weight: bold; margin-top: 10px; }
+    </style>
+""", unsafe_allow_html=True)
+
+# --- 2. SIDEBAR ---
+with st.sidebar:
+    st.header("🕵️‍♂️ RECON CONFIG")
+    api_key = st.text_input("Gemini API Key", type="password")
+    if api_key:
+        genai.configure(api_key=api_key)
+    
+    st.info("Paste a Competitor's URL. The Agent will scrape it and build a 'Battle Card'.")
+
+# --- 3. THE BRAIN (SCRAPE + ANALYZE) ---
+def scrape_website(url):
+    """Fetches text from a URL"""
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # Kill all script and style elements
+        for script in soup(["script", "style"]):
+            script.extract()
+            
+        # Get text
+        text = soup.get_text()
+        
+        # Break into lines and remove leading and trailing space on each
+        lines = (line.strip() for line in text.splitlines())
+        # Break multi-headlines into a line each
+        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+        # Drop blank lines
+        text = '\n'.join(chunk for chunk in chunks if chunk)
+        
+        return text[:10000] # Limit to 10k chars to save tokens
+    except Exception as e:
+        return f"Error scraping: {e}"
+
+def generate_battle_card(url, raw_text):
+    # Auto-detect model
+    available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+    model_name = next((m for m in available_models if 'flash' in m), available_models[0])
+    model = genai.GenerativeModel(model_name)
+
+    prompt = f"""
+    You are a Competitive Intelligence Officer.
+    
+    TARGET URL: {url}
+    WEBSITE CONTENT:
+    {raw_text}
+    
+    TASK:
+    Create a 'Sales Battle Card' to help us sell AGAINST this competitor.
+    
+    STRUCTURE:
+    1. 🎯 **The Pitch**: How do they describe themselves in 1 sentence?
+    2. 💰 **Pricing Model**: Can you find pricing info? (Freemium, Enterprise, etc).
+    3. 👤 **Target Customer**: Who are they talking to? (Developers, Marketers, CEOs?)
+    4. ⚔️ **Weaknesses (The Kill Shot)**: Based on their copy, what are they likely bad at? (e.g., if they say "Enterprise grade," they are likely slow/expensive. If they say "Simple," they likely lack features).
+    5. 🗣️ **Counter-Argument**: If a prospect says "We are using [Competitor]", what should I say to change their mind?
+    
+    Output in clean Markdown.
+    """
+    
+    response = model.generate_content(prompt)
+    return response.text
+
+# --- 4. THE UI ---
+st.title("🕵️‍♂️ Competitor Spy Agent")
+st.caption("Live Web Scraping + Strategic Analysis.")
+
+target_url = st.text_input("Enter Competitor URL", placeholder="https://www.fealtyx.com")
+
+if st.button("🚀 INFILTRATE"):
+    if not api_key:
+        st.warning("⚠️ Enter API Key in sidebar.")
+    elif not target_url:
+        st.warning("⚠️ Enter a URL.")
+    else:
+        with st.spinner(f"Scraping {target_url}..."):
+            # 1. Scrape
+            scraped_text = scrape_website(target_url)
+            
+            if "Error" in scraped_text:
+                st.error(scraped_text)
+            else:
+                st.success("Data Extracted. Analyzing Strategy...")
+                
+                # 2. Analyze
+                battle_card = generate_battle_card(target_url, scraped_text)
+                
+                # 3. Render
+                st.markdown(f"<div class='battle-card'>{battle_card}</div>", unsafe_allow_html=True)
