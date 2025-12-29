@@ -1,0 +1,26 @@
+# 🎨 Viral Carousel Generator (AI Design Engine)
+
+**Architected by Smit Godiyal**
+
+An automated content engine that turns a single topic into a professionally designed, 5-slide LinkedIn/Instagram carousel in seconds. It combines **Generative AI** for viral hook writing with **Python Image Processing** for pixel-perfect design.
+
+![App Screenshot](https://via.placeholder.com/1200x600.png?text=Paste+Your+Screenshot+Here)
+*(Replace this link with your actual screenshot)*
+
+## 🛑 The Problem
+Personal branding is essential, but high-quality content is a bottleneck.
+* **The Time Sink:** Designing a carousel in Canva takes 1-2 hours.
+* **The Cost:** Hiring a designer or ghostwriter costs $500/month.
+* **The Friction:** Most people have ideas but struggle with "making it look good."
+
+## 🛠️ The Solution
+I built a **Carousel Engine** that acts as an AI Design Agency:
+1.  **Content Strategy:** Uses Google Gemini 1.5 to write viral hooks, restructure ideas into 5 slides, and generate punchy copy.
+2.  **Automated Design:** Uses Python's `Pillow` (PIL) library to programmatically draw text, shapes, and layouts.
+3.  **Smart Typography:** Solves common Python font rendering issues by integrating directly with the Windows System Fonts for crisp, high-resolution text.
+
+## ⚙️ The Stack
+* **Frontend:** Streamlit
+* **Intelligence:** Google Gemini 1.5 Flash
+* **Image Processing:** Python Pillow (PIL)
+* **Design
