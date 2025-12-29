@@ -1,0 +1,119 @@
+import streamlit as st
+import google.generativeai as genai
+import json
+from PIL import Image, ImageDraw, ImageFont
+import textwrap
+
+# --- 1. CONFIG ---
+st.set_page_config(page_title="Carousel V4 (Light Mode)", page_icon="🎨", layout="centered")
+
+# --- 2. WINDOWS FONT LOADER ---
+def get_windows_font(size=40, is_bold=False):
+    # Force Arial from Windows System
+    font_path = "C:/Windows/Fonts/arialbd.ttf" if is_bold else "C:/Windows/Fonts/arial.ttf"
+    try:
+        return ImageFont.truetype(font_path, size)
+    except:
+        return ImageFont.load_default()
+
+# --- 3. SIDEBAR ---
+with st.sidebar:
+    st.header("🎨 DESIGN CONFIG")
+    api_key = st.text_input("Gemini API Key", type="password")
+    if api_key:
+        genai.configure(api_key=api_key)
+    
+    # Default to "LinkedIn Blue"
+    primary_color = st.color_picker("Text Color (Dark)", "#002B5C") 
+    accent_color = st.color_picker("Accent/Border Color", "#007ACC")
+    handle = st.text_input("Your Handle", "@smit_godiyal")
+
+# --- 4. CONTENT ENGINE ---
+def generate_content(topic):
+    available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+    model_name = next((m for m in available_models if 'flash' in m), available_models[0])
+    model = genai.GenerativeModel(model_name)
+    
+    prompt = f"""
+    You are a viral LinkedIn Ghostwriter. Create a 5-slide carousel on: "{topic}".
+    
+    JSON OUTPUT FORMAT:
+    [
+        {{"slide": 1, "type": "COVER", "title": "BIG HOOK", "subtitle": "Sub-hook"}},
+        {{"slide": 2, "type": "CONTENT", "title": "Point 1", "body": "Explanation"}},
+        {{"slide": 3, "type": "CONTENT", "title": "Point 2", "body": "Explanation"}},
+        {{"slide": 4, "type": "CONTENT", "title": "Point 3", "body": "Explanation"}},
+        {{"slide": 5, "type": "OUTRO", "title": "Summary", "body": "Call to action"}}
+    ]
+    Keep title < 6 words. Body < 20 words. No Markdown.
+    """
+    try:
+        response = model.generate_content(prompt)
+        text = response.text.replace("```json", "").replace("```", "").strip()
+        return json.loads(text)
+    except:
+        return []
+
+# --- 5. DESIGN ENGINE (Light Mode) ---
+def create_slide(data, text_color, accent_color, handle):
+    W, H = 1080, 1350
+    bg_color = "#FFFFFF" # PURE WHITE BACKGROUND
+    img = Image.new('RGB', (W, H), color=bg_color)
+    draw = ImageDraw.Draw(img)
+    
+    # Load Fonts
+    title_font = get_windows_font(size=100, is_bold=True)
+    body_font = get_windows_font(size=60, is_bold=False)
+    meta_font = get_windows_font(size=35, is_bold=False)
+
+    # 1. TOP & BOTTOM BARS (Accent Color)
+    draw.rectangle([0, 0, W, 30], fill=accent_color)
+    draw.rectangle([0, H-30, W, H], fill=accent_color)
+
+    # 2. SLIDE NUMBER
+    draw.text((50, 60), f"{data['slide']}/5", font=meta_font, fill=accent_color)
+    
+    # 3. HELPER: CENTER TEXT
+    def draw_centered_text(text, font, start_y, fill_color, max_width_chars=12):
+        lines = textwrap.wrap(text.upper() if font == title_font else text, width=max_width_chars)
+        current_y = start_y
+        for line in lines:
+            bbox = draw.textbbox((0, 0), line, font=font)
+            text_w = bbox[2] - bbox[0]
+            draw.text(((W - text_w) / 2, current_y), line, font=font, fill=fill_color)
+            current_y += (110 if font == title_font else 70)
+        return current_y
+
+    # 4. DRAW CONTENT
+    # Title (Dark Blue)
+    end_y = draw_centered_text(data['title'], title_font, 350, text_color, max_width_chars=14)
+    
+    # Body (Dark Grey for readability)
+    body_text_color = "#333333" 
+    if 'subtitle' in data:
+        draw_centered_text(data['subtitle'], body_font, end_y + 60, body_text_color, max_width_chars=22)
+    elif 'body' in data:
+        draw_centered_text(data['body'], body_font, end_y + 60, body_text_color, max_width_chars=24)
+
+    # 5. FOOTER HANDLE
+    draw.text((W/2 - 100, H-100), handle, font=meta_font, fill=accent_color)
+    draw.text((W - 250, H-100), "SWIPE ->", font=meta_font, fill=text_color)
+
+    return img
+
+# --- 6. UI RENDER ---
+st.title("🎨 Carousel V4 (Light Mode)")
+topic = st.text_input("Topic", "Why Startups Fail")
+
+if st.button("GENERATE"):
+    if not api_key:
+        st.warning("Need API Key")
+    else:
+        with st.spinner("Designing..."):
+            content = generate_content(topic)
+            if content:
+                for slide in content:
+                    img = create_slide(slide, primary_color, accent_color, handle)
+                    st.image(img, use_container_width=True)
+            else:
+                st.error("AI Error.")
