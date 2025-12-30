@@ -1,0 +1,81 @@
+import streamlit as st
+import google.generativeai as genai
+
+# --- 1. CONFIG ---
+st.set_page_config(page_title="Cold Email Architect", page_icon="📧", layout="centered")
+st.markdown("""
+    <style>
+    .stApp { background-color: #ffffff; color: #000000; }
+    .email-box { background-color: #f0f2f6; padding: 20px; border-radius: 10px; border-left: 5px solid #00d26a; margin-bottom: 20px; }
+    .subject-line { font-weight: bold; color: #002B5C; font-size: 1.1em; }
+    </style>
+""", unsafe_allow_html=True)
+
+# --- 2. SIDEBAR ---
+with st.sidebar:
+    st.header("📧 CAMPAIGN CONFIG")
+    api_key = st.text_input("Gemini API Key", type="password")
+    if api_key:
+        genai.configure(api_key=api_key)
+    
+    framework = st.selectbox("Copywriting Framework", ["PAS (Problem-Agitate-Solve)", "AIDA (Attention-Interest-Desire-Action)", "Direct Pitch"])
+    tone = st.select_slider("Tone", options=["Professional", "Casual/Startup", "Aggressive"])
+
+# --- 3. THE BRAIN ---
+def generate_campaign(target, value_prop, my_role, framework, tone):
+    # Auto-detect model
+    available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+    model_name = next((m for m in available_models if 'flash' in m), available_models[0])
+    model = genai.GenerativeModel(model_name)
+    
+    prompt = f"""
+    You are a YCombinator Sales Alumni. Write a 3-Email Cold Drip Campaign.
+    
+    CONTEXT:
+    - **Target Persona:** {target}
+    - **My Product/Value:** {value_prop}
+    - **My Role:** {my_role}
+    - **Framework:** {framework}
+    - **Tone:** {tone}
+    
+    OUTPUT FORMAT (Markdown):
+    
+    ## EMAIL 1 (The Hook)
+    **Subject:** [3 Options]
+    **Body:** [The Email]
+    
+    ## EMAIL 2 (The Value - 3 Days Later)
+    **Subject:** Re: [Same Subject]
+    **Body:** [The Email - focus on a case study or value add]
+    
+    ## EMAIL 3 (The Breakup - 7 Days Later)
+    **Subject:** Re: [Same Subject]
+    **Body:** [Short "Negative Reverse" email]
+    """
+    
+    response = model.generate_content(prompt)
+    return response.text
+
+# --- 4. UI ---
+st.title("📧 Cold Email Architect")
+st.caption("Target Persona ➡️ 3-Step Drip Campaign.")
+
+col1, col2 = st.columns(2)
+with col1:
+    target = st.text_input("Who are we pitching?", "CTO of a Series A Fintech")
+with col2:
+    my_role = st.text_input("Your Role", "Founder of DataFast")
+
+value_prop = st.text_area("What do we solve?", "We help fintechs process payments 2x faster using AI.")
+
+if st.button("🚀 BUILD CAMPAIGN"):
+    if not api_key:
+        st.warning("Enter API Key")
+    else:
+        with st.spinner("Architecting the perfect sequence..."):
+            campaign = generate_campaign(target, value_prop, my_role, framework, tone)
+            
+            # Display nicely
+            st.markdown(campaign)
+            
+            st.success("Campaign Ready. Copy & Paste into Apollo/Lemlist.")
