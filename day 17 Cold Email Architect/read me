@@ -1,0 +1,20 @@
+# 📧 Cold Email Architect (AI Sales Engineer)
+
+**Architected by Smit Godiyal**
+
+An AI-powered sales agent that generates high-converting, multi-touch drip campaigns (3-step sequences) based on proven copywriting frameworks like PAS and AIDA. It replaces generic templates with hyper-personalized outreach.
+
+![App Screenshot](https://via.placeholder.com/1200x600.png?text=Paste+Your+Screenshot+Here)
+*(Replace this link with your actual screenshot)*
+
+## 🛑 The Problem
+Most cold outreach fails because of "Blank Screen Syndrome" and generic copy.
+* **The Volume Trap:** Founders send 1,000 generic emails and get 0 replies.
+* **The Follow-Up Failure:** Most people send one email and give up. Statistics show 80% of sales happen on the 5th follow-up.
+* **The Tone Mismatch:** Engineers write emails that sound like robots; Salespeople write emails that sound like spam.
+
+## 🛠️ The Solution
+I built a **Cold Email Architect** that acts as a YC Alumni Sales Mentor:
+1.  **Campaign Logic:** It doesn't just write one email; it structures a full **3-Step Drip Campaign**:
+    * **Day 0 (The Hook):** Low-friction value prop.
+    * **Day 3 (The Nudge):** Case study or social
