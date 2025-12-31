@@ -1,0 +1,19 @@
+# 📄 DocuMind (AI Document Intelligence)
+
+**Architected by Smit Godiyal**
+
+An AI-powered document analysis engine that allows users to "chat" with their PDF files. It uses **Retrieval Augmented Generation (RAG)** to ingest complex documents (contracts, research papers, financial reports) and allows users to query them using natural language.
+
+![App Screenshot](https://via.placeholder.com/1200x600.png?text=Paste+Your+Screenshot+Here)
+*(Replace this link with your actual screenshot)*
+
+## 🛑 The Problem
+Static documents are dead data.
+* **The Search Gap:** Ctrl+F only finds keywords, not meaning. You can't Ctrl+F "What are the risks in this contract?"
+* **The Context Limit:** Humans cannot hold 50 pages of legal text in working memory at once.
+* **The Speed Bump:** Manually reviewing a 100-page operational report takes hours.
+
+## 🛠️ The Solution
+I built **DocuMind**, a semantic analysis engine:
+1.  **Ingestion:** Uses `pypdf` to extract raw text from unstructured PDF blobs.
+2.  **Context Injection:** Feeds the document content
